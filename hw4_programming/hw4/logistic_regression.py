@@ -47,7 +47,7 @@ def objective(w, X, y, lamb):
 
     sum = -sum
     norm_square = np.dot(w,w)
-    sum = sum+lamb*norm_square
+    sum = sum+(1/2)*lamb*norm_square
     #Something slightly off about regularization
     return sum
 
@@ -78,7 +78,7 @@ def gradient_descent(X, y, lamb, alpha, w0, num_iter):
     w = w0
     for i in range(0,num_iter):
         grad = gradient(w,y,X,lamb)
-        w = w-alpha*(grad)
+        w = w-alpha*grad
         w_one = w.reshape(len(w),1)
         weights.insert(len(weights),w_one)
 
@@ -91,7 +91,7 @@ def gradient(w,y,X,lamb):
         y_i = y[i]
         mu_i =  sigmoid(np.dot(w,X[i]))
         sum = sum+(y_i-mu_i)*X[i]
-    sum = -sum+2*lamb*w
+    sum = -sum+lamb*w
     return sum
 
 def newtons_method(X, y, lamb, w0, num_iter):
@@ -109,23 +109,7 @@ def newtons_method(X, y, lamb, w0, num_iter):
         Each element in the list should be an Mx1 numpy ndarray.
     """
     ### YOUR CODE HERE
-    weights=[w0]
-    w_one = w0[:]
-    y_one=y[:]
-    y=y.flatten()
-    w0=w0.flatten()
-    ### YOUR CODE HERE
-    w = w0
-    for i in range(0,num_iter):
-        print(w)
-        grad = gradient(w,y,X,lamb)
-        obj = objective(w_one,X,y_one,lamb)
-        w = w-(obj/grad)
-        w_one = w.reshape(len(w),1)
-        weights.insert(len(weights),w_one)
 
-    print(num_iter)
-    print(weights)
-    return weights
+    return None
 
 
