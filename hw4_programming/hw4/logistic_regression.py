@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import linalg as LA
 
 def setup_data():
     """ Setup training dataset
@@ -32,10 +33,28 @@ def objective(w, X, y, lamb):
         Returns: scalar value for the negative log likelihood
     """
     ### YOUR CODE HERE
-    return 0
+    sum = 0
+    w=w.flatten()
+    y=y.flatten()
+    for i in range(0,len(y)):
+        #print(sum)
+        dot = np.dot(w,X[i])
+        sig = sigmoid(dot)
+        #print(sig)
+        t1 = y[i]*((np.log(np.array([sig])))[0])
+        t2 = (1-y[i])*((np.log(np.array([1-sig])))[0])
+        sum = sum+t1+t2
+
+    sum = -sum
+    norm_square = np.dot(w,w)
+    sum = sum+lamb*norm_square
+    #Something slightly off about regularization
+    return sum
 
 ### FEEL FREE TO WRITE ANY HELPER FUNCTIONS HERE
-
+def sigmoid(z):
+    exp = np.exp(np.array([-z]))
+    return 1/(1+exp[0])
 
 def gradient_descent(X, y, lamb, alpha, w0, num_iter):
     """ Implement gradient descent on the objective function using the
@@ -52,11 +71,28 @@ def gradient_descent(X, y, lamb, alpha, w0, num_iter):
         and then the weight vectors after each of the num_iter iterations..
         Each element in the list should be an Mx1 numpy ndarray.
     """
+    weights=[w0]
+    y=y.flatten()
+    w0=w0.flatten()
     ### YOUR CODE HERE
-    return None
+    w = w0
+    for i in range(0,num_iter):
+        grad = gradient(w,y,X,lamb)
+        w = w-alpha*(grad)
+        w_one = w.reshape(len(w),1)
+        weights.insert(len(weights),w_one)
+
+    return weights
 
 ### FEEL FREE TO WRITE ANY HELPER FUNCTIONS HERE
-
+def gradient(w,y,X,lamb):
+    sum = np.zeros(len(X[0]))
+    for i in range(0,len(y)):
+        y_i = y[i]
+        mu_i =  sigmoid(np.dot(w,X[i]))
+        sum = sum+(y_i-mu_i)*X[i]
+    sum = -sum+2*lamb*w
+    return sum
 
 def newtons_method(X, y, lamb, w0, num_iter):
     """ Implement Newton's method on the objective function using the
@@ -73,6 +109,23 @@ def newtons_method(X, y, lamb, w0, num_iter):
         Each element in the list should be an Mx1 numpy ndarray.
     """
     ### YOUR CODE HERE
-    return None
+    weights=[w0]
+    w_one = w0[:]
+    y_one=y[:]
+    y=y.flatten()
+    w0=w0.flatten()
+    ### YOUR CODE HERE
+    w = w0
+    for i in range(0,num_iter):
+        print(w)
+        grad = gradient(w,y,X,lamb)
+        obj = objective(w_one,X,y_one,lamb)
+        w = w-(obj/grad)
+        w_one = w.reshape(len(w),1)
+        weights.insert(len(weights),w_one)
+
+    print(num_iter)
+    print(weights)
+    return weights
 
 
