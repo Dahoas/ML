@@ -1,0 +1,144 @@
+\newpage
+\section{Logistic Regression \pts{45}}
+
+\subsection{Softmax regression \pts{35}}
+
+In this question, we will derive the ``multi-class logistic regression'' algorithm (the MLE and its gradient).
+We assume the dataset $\mathcal{D}$ is $d$-dimensional (has $d$ features) with $n$ entries. 
+
+Given a training set $\{(x^i, y^i) | i = 1, \ldots, n \}$ where $x^i \in \mathbb{R}^{d+1}$ is a feature vector and $y^i\in \mathbb{R}^k$ is a binary (one-hot) vector with $k$ entries (classes). Note that in a one-hot vector, the corresponding class label is $1$ and all the rest entries are $0$s. For example, if the label of $X$ is $3$, then the corresponding $y$ should look something like $[0,0,1,...,0]\in \mathbb{R}^k$
+
+Note that $x^i$ is an vector of length $(d+1)$ because we pad the $d$ features by $1$ to vectorize computing the bias, that is $x^i = [1, (x^i)']$, where $(x^i)' \in \mathcal{D}$. 
+
+We want to find the parameters $\hat{w} \in \mathbb{R}^{k\times (d+1)}$ (one weight vector for each class) that maximize the likelihood for the training set, assuming a parametric model of the form
+\begin{equation}
+    p(y_c^i = 1 | x^i; w)
+    =\frac{\exp(w_c^T x^i)}{\sum_{c'}\exp(w_{c'}^T x^i)}.
+\end{equation}
+
+Note that $\frac{\exp(w_c^T x^i)}{\sum_{c'}\exp(w_{c'}^T x^i)}$ is always between $0$ and $1$, and $\sum_c p(y_c^i = 1 | x^i; w)$ is always $1$, which are desired properties of a probability distribution. Therefore, $\frac{\exp(w_c^T x^i)}{\sum_{c'}\exp(w_{c'}^T x^i)}$ is also known as the softmax function.
+
+Since we know the probability sums to $1$, we don't care about predicting the probability of the last ($k^{th}$) class, since we can calculate $p(y_k^i = 1 | x^i; w)$ by:
+
+\begin{equation}
+    p(y_k^i = 1 | x^i; w)
+    =1 - \frac{\sum_{c'=1}^{k-1}\exp(w_{c'}^T x^i)}{\sum_{c'}\exp(w_{c'}^T x^i)}.
+\end{equation}
+
+\begin{enumerate}
+\item \pts{10} % {\bf [3 Points]}  %\pts{10}
+Show the equivalence between the two formulations. Provide a short justification for why each line follows from the previous one in your derivation. (This is how we store less weights by making use of the fact that the probabilities sum to $1$)
+
+\begin{align}
+p(y_c^i = 1 | x^i; w)&=\frac{\exp(w_c^T x^i)}{\sum_{c'}\exp(w_{c'}^T x^i)}. \label{eq:prob-y}\\
+                     &=\begin{cases}
+                          \frac{\exp(w_c^T x^i)}{1+\sum_{c'=1}^{k-1}\exp(w_{c'}^T x^i)}, & \text{if}\ c<k \\
+                          \frac{1}{1+\sum_{c'=1}^{k-1}\exp(w_{c'}^T x^i)}, & \text{if}\ c=k 
+                        \end{cases} 
+\end{align}
+\begin{tcolorbox}[fit,height=8cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+    %solution
+\end{tcolorbox}
+
+\item \pts{5} 
+Derive the conditional log likelihood for logistic regression. For the sake of simplicity, we only consider eq. (\ref{eq:prob-y}).
+
+\begin{align}
+\ell(w_c)&\equiv\ln\prod_{j=1}^n p(y_c^j\mid x^j,w)\\
+%
+&=\sum_{j=1}^n \sum_{c=1}^{k} \left[y_c^j\left( w_c^Tx^j\right)
+    -y_c^j\ln\left( \sum_{c'}\exp(w_{c'}^T x^j))\right)\right]. \label{eq:likelihood}
+\end{align}
+
+\begin{tcolorbox}[fit,height=9cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+    %your solution here
+\end{tcolorbox}
+\pagebreak
+\item \pts{5}
+Next, we will derive the gradient of the previous expression with respect to the $c^{th}$ class of the weight matrix
+$w_c$, i.e., $\frac{\partial \ell(w)}{\partial w_c}$, where $\ell(w)$ denotes the log likelihood from part 1. 
+We will perform a few steps of the derivation, and then ask you to do one step at the end.
+If we take the derivative of Expression \ref{eq:likelihood} with respect to
+$w_c$, we get the following expression:
+
+\begin{align} \label{eq:blue}
+%
+\nabla_{w_c}\ell(w)
+=
+%
+\nabla_{w_c} \sum_{j=1}^n \sum_{c=1}^{k} \left[ {\color{blue} y_c^j\left( w_c^Tx^j\right)}
+    -{\color{red}y_c^j\ln\left( \sum_{c'}\exp(w_{c'}^T x^j))\right)}\right]
+\end{align}
+
+The blue expression is linear in $w_c$, so it can be simplified to $\sum_{j=1}^n y_c^j x^j$.
+For the red expression, first we consider a fixed $j\in [1,n]$. Use chain rule to verify that
+
+\begin{align}
+&~\nabla_{w_c} \sum_{j=1}^n \sum_{c=1}^{k} y_c^j\ln\left( \sum_{c'}\exp(w_{c'}^T x^j))\right)\\
+%
+&~=\sum_{j=1}^n \frac{\exp(w_{c}^T x^j)}{\sum_{c'}\exp(w_{c'}^T x^j)}x^j\label{eq:familiar}
+%
+\end{align}
+\begin{tcolorbox}[fit,height=12cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %solution
+    \end{tcolorbox}
+
+\pagebreak
+\item \pts{5} % {\bf [12 Points]}
+Now use Equation \ref{eq:familiar} (and the previous discussion) to show that overall,
+Expression \ref{eq:blue}, i.e., $\nabla_{w_c}\ell(w)$, is equal to
+\begin{align} \label{eq:mcle1}
+\nabla_{w_c}\ell(w) =\sum_{j = 1}^{n} x_i^j(y_c^j - p(y_c^j=1 \mid x^j; w)) 
+\end{align}
+\begin{tcolorbox}[fit,height=7cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %your solution here
+    \end{tcolorbox}
+    
+\item \pts{5}
+Since the log likelihood is concave, it is easy to optimize using gradient ascent.
+Derive the update rule for gradient ascent with respect to learning rate for $w_i$ w.r.t. $\eta$, $y^j, x^j$, and $p(y^j=1\mid x^j;w^{(t)})$. Feel free to index into the vectors using subscripts.
+
+\begin{tcolorbox}[fit,height=10cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %solution
+    \end{tcolorbox}
+% \end{enumerate}
+
+\pagebreak
+\item \pts{5}
+Explain how the logistic regression you learned in class relate to the softmax regression you derived.
+
+\begin{tcolorbox}[fit,height=8cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %solution
+    \end{tcolorbox}
+\end{enumerate}
+
+
+
+
+\newpage
+\subsection{General questions about logistic regression \pts{10}}
+
+\begin{enumerate}
+
+\item %{\bf [7 Points]} 
+Explain why logistic regression is a discriminative classifier (as opposed to a generative classifier such as Naive Bayes).
+
+\begin{tcolorbox}[fit,height=7cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+    %solution
+\end{tcolorbox}
+
+\item %{\bf [7 Points]}  
+What does the decision boundary of logistic regression look like when we have quadratic features? Justify your answer.
+
+Recall the prediction rule for logistic regression is if 
+$$p(y^j=1\mid x^j)>p(y^j=0\mid x^j),$$
+then predict 1, otherwise predict 0.
+
+Hint: consider the decision boundary as a function of
+\begin{gather*}
+    w_0,w_1,w_2,w_3,w_4\quad\text{and}\quad x_1,x_2,x_1x_2,x_1^2,x_2^2    
+\end{gather*}
+\begin{tcolorbox}[fit,height=7cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %solution
+    \end{tcolorbox}
+\end{enumerate}

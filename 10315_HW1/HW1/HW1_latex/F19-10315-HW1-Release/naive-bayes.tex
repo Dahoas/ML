@@ -1,0 +1,350 @@
+\section{Bayes Classifiers \pts{55}}
+
+\subsection{Optimal classifier \pts{10}}
+In Lecture 2 we stated that the optimal classifier for binary classification takes the following form
+\begin{gather}
+    f^*(x) = \argmax_{Y=y}~{P}(Y=y|X=x),
+    \label{eq:opt}
+\end{gather}
+here we are going to prove this.
+
+Let be $f$ a prediction rule, for binary classification, the loss is given by
+\begin{gather*}
+    loss(f(X),Y) = \mathbf{1}_{\{Y\neq f(X)\}} = 
+    \begin{cases} 
+      1 & \text{if}~f(X)\neq Y \\
+      0 & \text{if}~f(X)=Y \\      
+   \end{cases}
+\end{gather*}
+
+In order to prove \eqref{eq:opt}, we first define the risk of a prediction rule $f$ as:
+\begin{gather*}
+    R(f)=\mathbb{E}[loss(Y,f(X))],
+\end{gather*}
+and our objective is to find the function $f^*$ that minimizes this risk among all possible functions. In other words
+\begin{gather*}
+    f^* = \argmin_{f}{R} = \argmin_{f}\mathbb{E}[loss(Y,f(X))]
+\end{gather*}
+
+\begin{enumerate}
+    \item \pts{3} Let be $Y\in\{c_1,c_2\}$ the two class values that this random variable can take and $X \in \mathcal{X}$, being $\mathcal{X}$ the input space. Starting from $\mathbb{E}[loss(Y,f(X))]$ expand the expectation $(\mathbb{E})$ in terms of two indicator functions  $\mathbf{1}_{\{f(x)=c_1\}}$ and $\mathbf{1}_{\{f(x)=c_2\}}$.
+    %, that get a value of one in the presence of a misclassification.
+    
+    Hint: The loss function can also be written as:
+    \begin{gather*}
+    loss(Y,f(X)) = 
+    \begin{cases} 
+      1 & \text{if}~f(X)=c_1 ~\text{and}~ Y=c_2 \\
+      1 & \text{if}~f(X)=c_2 ~\text{and}~ Y=c_1 \\      
+      0 & \text{if}~f(X)=Y   
+    \end{cases}        
+    \end{gather*}    
+    
+    \begin{tcolorbox}[fit,height=5cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %solution
+    \end{tcolorbox}
+    
+    
+\pagebreak
+    
+    \item \pts{3} Using the expression that you just derived, rewrite it in terms of a single indicator function $\mathbf{1}_{\{f(x)=c_1\}}$. What is the expression that you obtained?
+    \textbf{Select one:}
+    \begin{list}{}
+        \item $\circle$ ${P}(Y=c_1|X=x) + [{P}(Y=c_2|X=x) - {P}(Y=c_1|X=x)] \cdot\mathbf{1}_{\{f(x)=c_1\}}$
+        \item $\circle$ ${P}(Y=c_1|X=x) + [{P}(Y=c_2|X=x) + {P}(Y=c_1|X=x)] \cdot\mathbf{1}_{\{f(x)=c_1\}}$
+        \item $\circle$ ${P}(Y=c_1|X=x) + [{P}(Y=c_2|X=x) - {P}(Y=c_2|X=x)] \cdot\mathbf{1}_{\{f(x)=c_1\}}$
+        \item $\circle$ $[{P}(Y=c_2|X=x) - {P}(Y=c_1|X=x)] \cdot\mathbf{1}_{\{f(x)=c_1\}}$
+    \end{list}
+
+
+    \item \pts{4} Finally, you can take the $\argmin$ of the expression that you just selected (i.e $\mathbb{E}[loss(Y,f(X))]$). 
+    
+    Write down the expression that you obtained for  $\displaystyle{f^* =\argmin_{f}\mathbb{E}[loss(Y,f(X))]}$ and re-write it in such a way that you can obtain \eqref{eq:opt}.
+    
+    \begin{tcolorbox}[fit,height=10cm, width=0.9\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+        %solution
+    \end{tcolorbox}    
+    
+\end{enumerate}
+
+\pagebreak
+\subsection{MLE vs. MAP estimation of probabilities \pts{7}}
+Probability estimation is a fundamental problem when using the Bayes rule for classification as in
+~\eqref{eq:opt}. Let's assume that the following dataset of observations of a Bernoulli process (H/T
+outcomes) is given: $\mathcal{D} = \{H,H,H,H,H\}$. In addition to the data, we also have a {\em prior}
+about the probability of observing H or T as an outcome. The prior is quantified in terms of {\em
+  pseudo-observations} for H and T, where we have $\alpha = 3$ pseudo-observations for the outcome
+H, and $\beta = 2$ pseudo-observations for the outcome T (note: a pseudo-observation is not a real
+observation, but rather a  sort of ``imaginary'' observation that reflects our beliefs).
+
+Since we know that data in $\mathcal{D}$ is drawn from a Bernoulli distribution, we can safely assume that $x_i \sim Bernoulli(x | \theta)$. Our problem is therefore the estimation of the
+parameter $\theta$ (where $\theta$ is the probability of H, why?).
+
+\begin{quote}
+\pts{2}\textbf{Select one:} The MLE estimator for $\theta$ is
+\begin{list}{}
+     \item\Circle{} 0.5
+     \item\Circle{} 0
+     \item\Circle{} 1
+     \item\Circle{} 3/2
+\end{list}
+\end{quote}
+
+
+\begin{quote}
+\pts{3}\textbf{Select one:} Using a $Beta(\theta | \alpha, \beta)$ distribution to model the prior over the
+parameter $\theta$, the MAP estimate for $\theta$ is
+\begin{list}{}
+     \item\Circle{} 3/2
+     \item\circle{} 7/8
+     \item\circle{} 1
+     \item\Circle{} 6/8
+\end{list}
+\end{quote}
+
+
+\begin{quote}
+\pts{2} \textbf{Fill in the blank:} Using a $Beta(\theta | 1, 1)$ distribution to model the prior over the
+parameter $\theta$, the MAP estimate for $\theta$ is:
+
+\begin{tcolorbox}[fit,height=2cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+\end{quote}
+
+\vspace*{1ex}  
+
+\pagebreak
+
+
+
+%##########################################################
+%##########################################################
+\newpage
+\subsection{Implementing Na\"{i}ve Bayes \pts{38}}
+In this question you will implement a Na\"{i}ve Bayes classifier for a simple credit-screening problem. In the provided input files you will find a processed collection of old applications for credit cards along with a corresponding label stating whether they were accepted or rejected by the bank. The goal in this problem is to learn the underlying function of these decisions and be able to classify (label) any new application as {\em accepted} or {\em rejected}. 
+
+In the data files, each line (credit card application data) consists of 16 data points separated by a comma ``,''. The first 15 data points represent attribute values and the last point is the corresponding label for that instance data point. Table~\ref{tab:data_spec} gives more information about each attribute in terms of the type and values it can take. In each of the data files, all attribute names and values have been changed to meaningless symbols to protect confidentiality of the data. The features are a mix of multi-nominal and continuous attributes. 
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{| c | c | c |} 
+   \hline
+    $i$ & $n_{i}$ & Possible Values \\\hline
+    00 & 2 &  b, a \\\hline 
+    01 & - & continuous \\\hline
+    02 & - & continuous \\\hline
+    03 & 4 & u, y, l, t \\\hline
+    04 & 3 & g, p, gg \\\hline
+    05 & 14 & c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff \\\hline
+    06 & 9 & v, h, bb, j, n, z, dd, ff, o \\\hline
+    07 & - & continuous \\\hline 
+    08 & 2 & t, f \\\hline
+    09 & 2 & t, f \\\hline
+    10 & - & continuous \\\hline
+    11 & 2 & t, f \\\hline
+    12 & 3 & g, p, s \\\hline
+    13 & - & continuous \\\hline
+    14 & - & continuous \\\hline \hline
+    label & 2 & "+"/"-" \\\hline
+\end{tabular}
+    \caption{Description of attribute information in provided data files}
+    \label{tab:data_spec}
+\end{table}
+
+Each credit card application in your data can be therefore modeled as a feature vector $X = \{x_{0},x_{2},x_{3},\ldots ,x_{14}\}$ that includes different types of values. The general assumption is that the features are conditionally independent given the application label. We can therefore employ a Na\"{i}ve Bayes classifier.  
+
+Note that, using the Bayes rule, your class prediction is:
+\begin{gather}
+    \hat{y}_{X} = \argmax_{y} P(X|y) \cdot P(y) ,
+\end{gather}
+%
+where the class $y$ is the screening result, ``+'' (accepted) or ``-'' (rejected). Since we are using the Na\"{i}ve Bayes model, the following holds:
+\begin{gather}
+    P(X|y) = \prod_{x_{i} \in X} P(x_{i}|y).
+\end{gather}
+%
+
+Therefore, the problem becomes the estimation of the coordinate-wise conditional probabilities $P(x_{i} | y)$,  for $i \in \{0,2,3,\ldots ,14\}$ as well as estimating the class prior distributions, and combining them with the Bayes rule to find the most probable class for given input data. Since the feature vector $X$ includes hybrid data, you'll need to adopt different approaches for estimating the different probability distributions. To simplify your task and guide your work, we broke down the problem into separate tasks described below, distinguishing between continuous- and discrete-valued features, considering training, classification, and testing. Each task includes some questions that will also help you to make decisions in your implementation. In practice, you will have to make a few design choices and justify them. For obtaining full score in this section, you should turn in your final code (upload your code on Gradescope), as well as answer all the questions below (upload your handout on Gradescope). It is important that the code you submit and your answers below are consistent with each other!
+
+\textcolor{red}{Starter Code for parsing data and evaluating the classifier will be made available soon through Piazza.}
+
+\textbf{Tasks} 
+\begin{enumerate}
+    \item \textbf{Pre-processing} 
+    
+    You should start by reading the training data file {\tt training.dat} and parsing it line-by-line to collect data about each feature separately. As mentioned earlier, data points are separated by a comma ``,''. For each of the 15 features you want to construct a \texttt{feature\_values} structure, which is simply a tuple \texttt{(n, data)}:
+    \begin{itemize}
+        \item \texttt{n}, is an integer representing the range of values for the given feature. You can conveniently set \texttt{n} to \texttt{-1} to indicate that the feature is a real number (encoded as a float).
+        \item \texttt{data} is an array of all values of the feature as per the data set. For continuous features this is an array of floats, and for discrete features with $n$ possible values this is an array of integers $\in {0,1,\ldots n-1}$ that map to the possible values of the feature. It is up to you how to represent missing data (associated to a '?' symbol in the data file) in either case. 
+    \end{itemize}
+    
+    The last, 16th attribute in each data entry is the class label. You should collect the labels separately into an array \texttt{labels} that you will use to estimate the probability distributions for all attributes. 
+    
+    \pagebreak
+    \pts{2} How should your classifier deal with a missing entry in a feature vector $X$ while reading the data?
+    \textbf{Select One:}
+    \begin{list}{}
+        \item \Circle{} It can discard the entry corresponding to `?' as if the data for that specific feature didn't exist.
+        \item \Circle{} It should treat `?' as an extra value and include it in the data used for probability distribution estimation.
+        \item \Circle{} It has to discard an equal number of data points from all features.
+        \item \Circle{} It has to discard the entire data entry $X$. 
+    \end{list}
+    
+    
+    \item \textbf{Estimating Probability Distributions for Continuous-Valued Features}
+    
+    For continuous-valued features, write a function \texttt{estimate\_continuous(feature\_values, labels)} that takes as inputs a feature structure \texttt{feature\_values} (described above) which contains all training data for that attribute, and \texttt{labels}, the array of corresponding labels. 
+    
+    The function \texttt{estimate\_continuous(feature\_values, labels)} should return a pair of tuples, $(P_{i|acc}$, $P_{i|rej})$, where, for feature $i$, $P_{i|acc}$ provides the estimated values of the parameters for the probabilistic distribution of class {\em accepted}, and $P_{i|acc}$ provides the estimated parameter values for the distribution of class {\em rejected}. Parameter estimation for these continuous distributions must be done using \textbf{Maximum Likelihood Estimation}.
+    
+    \begin{quote}
+    \pts{2}  We do parametric estimation of probability distributions. This makes the task simple(r), but we need to set an inductive bias by making a hypothesis about the class of the distribution (e.g., Gaussian, Bernoulli, Binomial). In absence of additional knowledge about the data, what could be a suitable choice for the class of the distribution that you should assume in \texttt{estimate\_continuous(feature\_values, labels)}? How many parameters will you have to estimate for each one of such distributions?
+    
+    \begin{tcolorbox}[fit,height=4cm, width=0.8\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+    \end{tcolorbox}
+    \end{quote}
+    
+    \pagebreak
+    \begin{quote}
+    \pts{8} What are the parameters that your function\\ \texttt{estimate\_continuous(feature\_values, labels)} returns when ran on the attribute with identifier $(i = 10)$ in the table?
+    
+    $P_{10|acc}$  \begin{tcolorbox}[fit,height=1cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+    
+    $P_{10|rej}$
+    \begin{tcolorbox}[fit,height=1cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+    \end{quote}
+
+    \item \textbf{Estimating Probability Distributions for Discrete-Valued Features} 
+    
+     For discrete-valued features, write a function \texttt{estimate\_discrete(feature\_values, labels)} that takes as inputs a feature structure (described above) \texttt{feature\_values} which contains all training data for that feature, and \texttt{labels}, the array of corresponding labels. \texttt{estimate\_discrete(feature\_values, labels)} should return a pair of tuples, $(P_{i|acc}$, $P_{i|rej})$, where, for feature $i$, $P_{i|acc}$ provides the estimated values of the parameters for the probabilistic distribution of class {\em accepted}, and $P_{i|acc}$ provides the estimated parameter values for the distribution of class {\em rejected}.
+     
+    \begin{quote}
+        
+    \pts{2} What is the most suitable functional form that you should assume for the parametric probability distribution in \texttt{estimate\_discrete(feature\_values, labels)}? Note that the choice should be suitable to represent discrete random variables that can take on $n$ possible values, $n \ge 2$. Given your choice, how many parameters will you have to estimate for each distribution?
+    
+    \begin{tcolorbox}[fit,height=4cm, width=0.8\textwidth, blank,     borderline={1pt}{-2pt},nobeforeafter]
+    %your solution here
+    \end{tcolorbox}
+    \end{quote}
+    
+    Again, you must use \textbf{Maximum Likelihood Estimation} to estimate the parameters of the parametric probability distributions. However, this time, your probability estimation will be presented differently, each probability distribution is parametrized into a tuple of size $n$ such that $P_{i|y}[j] = P(x_i = j | y)$ where $j$ is the $j$-th possible value of the feature. 
+    
+    \begin{quote}
+    \pts{4} Run your function \texttt{estimate\_discrete(feature\_values, labels)} on the attribute with $(i = 0)$ in Table~\ref{tab:data_spec}. What is the log-probability that $x_{0} = 1$ (`a', in the specific case)?~\footnote{\textbf{Note on log-probability vs probability}: Whenever implementing probability distributions in code, it is always advisable to work with log-probabilities instead of probabilities. Raw probabilities can be very small, especially if many small probabilities are multiplied together. This can cause numerical issues. Instead, we should represent log probabilities and add them whenever raw probabilities need to be multiplied.}
+    
+    $\log P_{x_{0}|acc}[1]$  \begin{tcolorbox}[fit,height=1cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+    
+    $\log P_{x_{0}|rej}[1]$
+    \begin{tcolorbox}[fit,height=1cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+    
+    \pts{4} Run your function \texttt{estimate\_discrete(feature\_values, labels)} on the attribute with $(i = 5)$ in Table~\ref{tab:data_spec}. What is the log-probability that $x_{5} = 8$ (`q')? 
+    
+    $\log P_{x_{5}|acc}[8]$  \begin{tcolorbox}[fit,height=1cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+    
+    $\log P_{x_{5}|rej}[8]$
+    \begin{tcolorbox}[fit,height=1cm, width=4cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    \begin{center} \end{center}
+    \end{tcolorbox}\hspace{2cm}
+    \end{quote}
+    
+    \item \textbf{Estimating Class Distribution}
+    
+    For the case of the class prior probability distribution, write a function 
+    \begin{center}
+    \texttt{probability\_acc(labels)}         
+    \end{center}
+    that takes in input the array of labels from the data set and uses it to estimate the prior probability that {\em any} credit card application would be $accepted$. In this case, you must use a MAP estimate for the parameter of the distribution. At this aim, you are provided with a  $Beta$ prior for the parameters, where the hyper-parameters of the $Beta$ distribution are $\alpha = 7$ and $\beta = 9$.\\
+
+    \begin{quote}
+    \pts{2} Given that you are asked to use a MAP estimate, and a $Beta$ prior is given for the parameters, what is your choice for the  parametric class distribution? (e.g., Gaussian, Binomial, Bernoulli). Justify your answer. How many parameters does it take?
+        
+    \begin{tcolorbox}[fit,height=1.5cm, width=10cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    %your solution here
+    \end{tcolorbox}\hspace{2cm}
+        
+    \pts{4} Run your function \texttt{probability\_acc(labels)} on the provided training data. What is the estimated log-probability that a credit card application is $accepted$? 
+    
+    \begin{tcolorbox}[fit,height=1.4cm, width=10cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    %your solution here
+    \end{tcolorbox}\hspace{2cm}
+    
+    \end{quote}
+    
+    \pagebreak
+    \item \textbf{Classify new instances} 
+    
+    Write a function \texttt{estimate(trained\_model,X)} that takes in input: 
+    \begin{itemize}
+        \item \texttt{trained\_model}: a tuple of 16 elements, where first 15 are the attribute probability estimations computed using \texttt{estimate\_discrete} and \texttt{estimate\_continuous}, and the last one is the value returned from \texttt{probability\_acc}. 
+        \item {\tt X}: an unlabeled feature vector represented as an array of 15 attribute values. Continuous attributes are represented as floats and discrete attributes are represented as integers $\in \{0,1,\ldots n-1\}$ that map to the possible values of the attribute.
+    \end{itemize}
+    
+    Your function \texttt{estimate(trained\_model,X)} should return a tuple of three values \texttt{class, log\_prob\_acc, log\_prob\_rej}:
+    \begin{itemize}
+        \item \texttt{class}: a string representing the chosen class "+" if the classifier accepts the application with the provided attributes and "-" otherwise. 
+        \item \texttt{log\_prob\_acc}: the conditional log-probability of the feature vector {\tt X} given that the application is $accepted$, $P(X|y = acc) \cdot P(y = acc)$.
+        \item \texttt{log\_prob\_rej}: the conditional log-probability of the feature vector {\tt X} given that the application is $rejected$, $P(X|y = rej) \cdot P(y = rej)$.
+    \end{itemize}
+    
+    \pts{6} Run your functions on the following values of {\tt X} (after mapping them to the correct representation) and report the classification and the log-probabilities returned: 
+    \begin{enumerate}
+        \item $[b,28.25,0.875,u,g,m,v,0.96,t,t,03,t,g,396,0]$
+        
+        \begin{tcolorbox}[fit,height=1.5cm, width=12cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+        %your solution here
+        \end{tcolorbox}\hspace{2cm}
+        
+        \item $[b,42.75,4.085,u,g,aa,v,0.04,f,f,0,f,g,108,100]$
+        
+        \begin{tcolorbox}[fit,height=1.5cm, width=12cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+        %your solution here
+        \end{tcolorbox}\hspace{2cm}
+        
+        \item $[a,46.08,3,u,g,c,v,2.375,t,t,8,t,g,396,4159]$
+        
+        \begin{tcolorbox}[fit,height=1.5cm, width=12cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+        %your solution here
+        \end{tcolorbox}\hspace{2cm}
+    \end{enumerate}
+    
+    \pagebreak
+    \item \textbf{Evaluate your Classifier} 
+    
+    \pts{2}. Last part in building any machine learning model is evaluating it. You are provided with an incomplete function \texttt{ClassificationEvaluation(Filename)} that you should complete using the functions you implemented above. You will then run \texttt{ClassificationEvaluation()} using the training dataset in {\tt training.dat} and testing dataset in {\tt testing.dat}. Report the errors below:
+    
+    
+    Training Error\\ \begin{tcolorbox}[fit,height=1.5cm, width=12cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    %your solution here
+    \end{tcolorbox}\hspace{2cm}
+    
+    Testing Error\\ \begin{tcolorbox}[fit,height=1.5cm, width=12cm, blank, borderline={1pt}{-2pt},nobeforeafter]
+    %your solution here
+    \end{tcolorbox}\hspace{2cm}
+    
+    
+    \pts{2} Which Error is more representative of the error we would expect on a new collection of applications? Does Naive Bayes attempt to minimize the training error?
+    \textbf{Select One:}
+    \begin{list}{}
+        \item \Circle{} Training, Yes
+        \item \Circle{} Training, No
+        \item \Circle{} Testing, Yes
+        \item \Circle{} Testing, No
+    \end{list}
+    
+    
+\end{enumerate}
+
+
+
+
